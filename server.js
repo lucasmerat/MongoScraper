@@ -115,8 +115,9 @@ app.post("/api/addcomment/:id", (req, res) => {
       { _id: req.params.id },
       { comment: dbComment._id },
       { new: true }
-    ).then((dbArticle)=>{
-        res.json(dbArticle);
+    ).then(dbArticle => {
+      dbArticle.comment = dbComment;
+      res.json(dbArticle);
     });
   });
 });
