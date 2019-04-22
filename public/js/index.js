@@ -35,3 +35,31 @@ $(document).on("click", ".save-article", function() {
       console.log(err);
     });
 });
+
+$(document).on("click", ".article-comments", function(){
+    console.log("Clicked article comments. Will pop modal up")
+});
+
+$(document).on("click", ".delete-save", function(){
+    $.ajax("/api/delete", {
+        type: "PUT",
+        data: { id: $(this).attr("data-id") }
+      })
+        .then(result => {
+            location.reload();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+});
+
+
+$(document).on("click", ".article-comments", function(){
+    let id = $(this).attr('data-id');
+    $.ajax("/api/comments/" + id, {
+        type: "GET"
+      }).then(articles => {
+        console.log("Hello");
+        console.log(articles)
+      });
+})

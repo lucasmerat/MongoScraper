@@ -33,17 +33,16 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/articles", (req, res)=>{
-    db.Article.find({})
+app.get("/articles", (req, res) => {
+  db.Article.find({})
     .then(dbArticles => {
-        console.log(dbArticles)
+      console.log(dbArticles);
       res.json(dbArticles);
     })
     .catch(err => {
       res.json(err);
     });
 });
-
 
 app.get("/api/scrape", (req, res) => {
   axios.get("https://www.npr.org/sections/allsongs/").then(response => {
@@ -64,29 +63,54 @@ app.get("/api/scrape", (req, res) => {
         };
         db.Article.create(article)
           .then(dbArticle => {
-              console.log("Creating article");
+            console.log("Creating article");
           })
           .catch(err => {
             console.log(err);
           });
       });
-      res.json("Done")
+      res.json("Done");
     });
   });
 });
 
-app.put("/api/save", (req,res)=>{
-    console.log(req.body)
-    db.Article.updateOne({'_id': req.body.id}, {$set:{saved:true}}).then((record)=>{
-        res.json(record);
-    })
-})
+app.put("/api/save", (req, res) => {
+  db.Article.updateOne({ _id: req.body.id }, { $set: { saved: true } }).then(
+    record => {
+      res.json(record);
+    }
+  );
+});
 
-app.get("/saved", (req, res)=>{
-    db.Article.find({saved:true}, (err, results)=>{
-        console.log(results)
-        res.render("saved", {articles: results});
+app.put("/api/delete", (req, res) => {
+  db.Article.updateOne({ _id: req.body.id }, { $set: { saved: false } }).then(
+    record => {
+      res.json(record);
+    }
+  );
+});
+
+app.get("/saved", (req, res) => {
+  db.Article.find({ saved: true }, (err, results) => {
+    console.log(results);
+    res.render("saved", { articles: results });
+  });
+});
+
+app.get("/api/comments/:id", (req, res) => {
+  console.log(req.params.id);
+  db.Article.findOne({ _id: req.params.id })
+    .populate("comment")
+    .then(response => {
+      res.json(response);
     })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+app.post("/api/addcomment/:id", (req, res)=>{
+    console.log(req.params.id);
 })
 
 app.listen(PORT, () => {
