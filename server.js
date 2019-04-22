@@ -49,7 +49,6 @@ app.get("/api/scrape", (req, res) => {
   axios.get("https://www.npr.org/sections/allsongs/").then(response => {
     let $ = cheerio.load(response.data);
     db.Article.deleteMany({}, (err, result) => {
-      console.log(result);
       $("div.item-info-wrap").each((i, element) => {
         let article = {
           title: $(element)
@@ -75,6 +74,20 @@ app.get("/api/scrape", (req, res) => {
     });
   });
 });
+
+app.put("/api/save", (req,res)=>{
+    console.log(req.body)
+    db.Article.updateOne({'_id': req.body.id}, {$set:{saved:true}}).then((record)=>{
+        res.json(record);
+    })
+})
+
+app.get("/saved", (req, res)=>{
+    db.Article.find({saved:true}, (err, results)=>{
+        console.log(results)
+        res.render("saved", {articles: results});
+    })
+})
 
 app.listen(PORT, () => {
   console.log("App running on port " + PORT + "!");
