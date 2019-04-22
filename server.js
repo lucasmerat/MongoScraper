@@ -120,6 +120,12 @@ app.post("/api/addcomment/:id", (req, res) => {
   });
 });
 
+app.delete("/api/deletecomment/:id", (req, res)=>{
+    db.Comment.deleteOne({_id: req.params.id}).then((result)=>{
+        res.json(result)
+    })
+})
+
 app.listen(PORT, () => {
   console.log("App running on port " + PORT + "!");
 });

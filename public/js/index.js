@@ -48,28 +48,35 @@ $(document).on("click", ".delete-save", function() {
 });
 
 $(document).on("click", ".article-comments", function() {
-  $(".comment-section").empty();
   let id = $(this).attr("data-id");
   $(".add-comment").attr("data-id", id);
+  loadComments(id);
+});
+
+function loadComments(id) {
+  $(".comment-section").empty();
   $.ajax("/api/comments/" + id, {
     type: "GET"
   }).then(articles => {
-    if(articles.comment.length < 1){
-        $(".comment-section").append("<h5>No comments yet... add one!</h5")
-    } else{
-        articles.comment.forEach(comment=>{
-            let commentId = comment._id;
-            let commentBody = comment.body;
-            $(".comment-section").append(
-              `<h5>${commentBody}</h5><button data-id='${commentId}' class='btn-small red'>X</button>`
-            );
-        })
-    } 
+    if (articles.comment.length < 1) {
+      $(".comment-section").append("<h5>No comments yet... add one!</h5");
+    } else {
+      articles.comment.forEach(comment => {
+        let commentId = comment._id;
+        let commentBody = comment.body;
+        $(".comment-section").append(
+          `<h5>${commentBody}</h5><button data-id='${commentId}' class='btn-small red delete-comment'>X</button>`
+        );
+      });
+    }
   });
-});
+}
 
 $(document).on("click", ".add-comment", function(e) {
   e.preventDefault();
+  if ($(".comment-section").children().length === 1) {
+    $(".comment-section").empty();
+  }
   let id = $(this).attr("data-id");
   let comment = $(".comment-body")
     .val()
@@ -81,8 +88,19 @@ $(document).on("click", ".add-comment", function(e) {
     $(".comment-section").append(
       `<h5>${dbComment.body}</h5><button data-id='${
         dbComment._id
-      }' class='btn-small red'>X</button>`
+      }' class='btn-small red delete-comment'>X</button>`
     );
     $(".comment-body").val("");
+  });
+});
+
+$(document).on("click", ".delete-comment", function() {
+  let commentId = $(this).attr("data-id");
+  $.ajax("/api/deletecomment/" + commentId, {
+    type: "DELETE",
+    data: { _id: commentId }
+  }).then(result => {
+    $(".comment-section").empty();
+    loadComments($(".add-comment").attr("data-id"));
   });
 });
