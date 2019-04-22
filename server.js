@@ -33,22 +33,47 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/api/scrape", (req, res) =>{
-    axios.get("https://www.npr.org/sections/allsongs/").then((response)=>{
-        let $ = cheerio.load(response.data);
-        let articles = [];
-
-        $("div.item-info-wrap").each((i, element) =>{
-
-            let article = {
-                title: $(element).find($('.title')).text(),
-                link: $(element).find($('.title')).children().attr('href'),
-                teaser: $(element).find($('.teaser')).text()
-            }
-            articles.push(article);
-        });
-        console.log(articles)
+app.get("/articles", (req, res)=>{
+    db.Article.find({})
+    .then(dbArticles => {
+        console.log(dbArticles)
+      res.json(dbArticles);
+    })
+    .catch(err => {
+      res.json(err);
     });
+});
+
+
+app.get("/api/scrape", (req, res) => {
+  axios.get("https://www.npr.org/sections/allsongs/").then(response => {
+    let $ = cheerio.load(response.data);
+    db.Article.deleteMany({}, (err, result) => {
+      console.log(result);
+      $("div.item-info-wrap").each((i, element) => {
+        let article = {
+          title: $(element)
+            .find($(".title"))
+            .text(),
+          link: $(element)
+            .find($(".title"))
+            .children()
+            .attr("href"),
+          teaser: $(element)
+            .find($(".teaser"))
+            .text()
+        };
+        db.Article.create(article)
+          .then(dbArticle => {
+              console.log("Creating article");
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      });
+      res.json("Done")
+    });
+  });
 });
 
 app.listen(PORT, () => {
