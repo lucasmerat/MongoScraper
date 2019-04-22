@@ -98,7 +98,6 @@ app.get("/saved", (req, res) => {
 });
 
 app.get("/api/comments/:id", (req, res) => {
-  console.log(req.params.id);
   db.Article.findOne({ _id: req.params.id })
     .populate("comment")
     .then(response => {
@@ -113,11 +112,10 @@ app.post("/api/addcomment/:id", (req, res) => {
   db.Comment.create(req.body).then(dbComment => {
     return db.Article.findOneAndUpdate(
       { _id: req.params.id },
-      { comment: dbComment._id },
+      { $push:{ comment: dbComment._id } },
       { new: true }
     ).then(dbArticle => {
-      dbArticle.comment = dbComment;
-      res.json(dbArticle);
+      res.json(dbComment);
     });
   });
 });

@@ -17,7 +17,6 @@ $(".scrape").on("click", () => {
   $.ajax("/api/scrape", {
     type: "GET"
   }).then(articles => {
-    console.log("Hello");
     location.reload();
   });
 });
@@ -55,14 +54,16 @@ $(document).on("click", ".article-comments", function() {
   $.ajax("/api/comments/" + id, {
     type: "GET"
   }).then(articles => {
-    if(!articles.comment){
+    if(articles.comment.length < 1){
         $(".comment-section").append("<h5>No comments yet... add one!</h5")
     } else{
-        let commentId = articles.comment._id;
-        let commentBody = articles.comment.body;
-        $(".comment-section").append(
-          `<h5>${commentBody}</h5><button data-id='${commentId}' class='btn-small red'>X</button>`
-        );
+        articles.comment.forEach(comment=>{
+            let commentId = comment._id;
+            let commentBody = comment.body;
+            $(".comment-section").append(
+              `<h5>${commentBody}</h5><button data-id='${commentId}' class='btn-small red'>X</button>`
+            );
+        })
     } 
   });
 });
@@ -76,14 +77,12 @@ $(document).on("click", ".add-comment", function(e) {
   $.ajax("/api/addcomment/" + id, {
     type: "POST",
     data: { body: comment }
-  }).then(dbArticle => {
-    $(".comment-section").empty();
+  }).then(dbComment => {
     $(".comment-section").append(
-      `<h5>${dbArticle.comment.body}</h5><button data-id='${
-        dbArticle.comment._id
+      `<h5>${dbComment.body}</h5><button data-id='${
+        dbComment._id
       }' class='btn-small red'>X</button>`
     );
     $(".comment-body").val("");
-    console.log(dbArticle);
   });
 });
