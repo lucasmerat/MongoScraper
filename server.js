@@ -109,9 +109,17 @@ app.get("/api/comments/:id", (req, res) => {
     });
 });
 
-app.post("/api/addcomment/:id", (req, res)=>{
-    console.log(req.params.id);
-})
+app.post("/api/addcomment/:id", (req, res) => {
+  db.Comment.create(req.body).then(dbComment => {
+    return db.Article.findOneAndUpdate(
+      { _id: req.params.id },
+      { comment: dbComment._id },
+      { new: true }
+    ).then((dbArticle)=>{
+        res.json(dbArticle);
+    });
+  });
+});
 
 app.listen(PORT, () => {
   console.log("App running on port " + PORT + "!");

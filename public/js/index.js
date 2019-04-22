@@ -36,10 +36,6 @@ $(document).on("click", ".save-article", function() {
     });
 });
 
-$(document).on("click", ".article-comments", function(){
-    console.log("Clicked article comments. Will pop modal up")
-});
-
 $(document).on("click", ".delete-save", function(){
     $.ajax("/api/delete", {
         type: "PUT",
@@ -55,11 +51,26 @@ $(document).on("click", ".delete-save", function(){
 
 
 $(document).on("click", ".article-comments", function(){
+    $(".comment-section").empty();
     let id = $(this).attr('data-id');
+    $(".add-comment").attr('data-id', id)
     $.ajax("/api/comments/" + id, {
         type: "GET"
       }).then(articles => {
-        console.log("Hello");
-        console.log(articles)
+        let commentId = articles.comment._id;
+        let commentBody = articles.comment.body;
+        $(".comment-section").append(`<h5>${commentBody}</h5><button data-id='${commentId}' class='btn-small red'>X</button>`)
+      });
+})
+
+$(document).on("click", ".add-comment", function(e){
+    e.preventDefault();
+    let id = $(this).attr('data-id');
+    let comment = $(".comment-body").val().trim();
+    $.ajax("/api/addcomment/" + id, {
+        type: "POST",
+        data: {body: comment}
+      }).then(comment => {
+        console.log(comment);
       });
 })
