@@ -30,3 +30,12 @@ body{
 .save-article, .delete-save, .article-comments{
     border-radius: 14px;
 }
+
+.image-box{
+    margin-top: 15px;
+}
+
+.content-box{
+    display: flex;
+    align-items: center;
+}

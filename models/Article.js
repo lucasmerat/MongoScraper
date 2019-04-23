@@ -15,6 +15,9 @@ let ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  image: {
+    type: String
+  },
   saved: {
     type: Boolean,
     default: false

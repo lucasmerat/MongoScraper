@@ -50,7 +50,15 @@ app.get("/articles", (req, res) => {
 app.get("/api/scrape", (req, res) => {
   axios.get("https://www.npr.org/sections/allsongs/").then(response => {
     let $ = cheerio.load(response.data);
+
     $("div.item-info-wrap").each((i, element) => {
+      //Fixes lo-res scrape of image
+      let image = $(element)
+        .siblings()
+        .find(".respArchListImg")
+        .attr("src");
+      let highRes = image.replace("s300-c15", "s700-c85");
+      
       let article = {
         title: $(element)
           .find($(".title"))
@@ -61,8 +69,10 @@ app.get("/api/scrape", (req, res) => {
           .attr("href"),
         teaser: $(element)
           .find($(".teaser"))
-          .text()
+          .text(),
+        image: highRes
       };
+
       db.Article.findOne({ title: article.title }).then(dbArticle => {
         if (!dbArticle) {
           db.Article.create(article)
@@ -81,11 +91,12 @@ app.get("/api/scrape", (req, res) => {
 
 //Save an article for later
 app.put("/api/save", (req, res) => {
-  db.Article.updateOne({ _id: req.body.id }, { $set: { saved: true , createdAt:new Date()} }).then(
-    record => {
-      res.json(record);
-    }
-  );
+  db.Article.updateOne(
+    { _id: req.body.id },
+    { $set: { saved: true, createdAt: new Date() } }
+  ).then(record => {
+    res.json(record);
+  });
 });
 
 //Remove an article from saved

@@ -1,13 +1,19 @@
+//Modal event listener
+document.addEventListener('DOMContentLoaded', function () {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+});
+
 //Load articles when home page loads
 $.getJSON("/articles", data => {
   console.log(data);
   data.map(article => {
     $(".all-articles").append(
-      `<div class='col s12'><div class='card'><div class='card-content'><span class='card-title'><a href='${article.link}'><h4 class='title'>${
+      `<div class='col s12'><div class='card'><div class='card-content'><div class="row content-box"><div class="col s5 image-box"><img src='${article.image}' class='responsive-img'></div><div class="col s7" ><span class='card-title'><a href='${article.link}'><h4 class='title'>${
         article.title
       }</h4></span></a><p class='teaser'>${
         article.teaser
-      }</p><div class="card-action center"><button class='btn-small save-article red darken-2' data-id='${
+      }</p></div></div><div class="card-action"><button class='btn-small save-article red darken-2' data-id='${
         article._id
       }'>Save Article</button></div></div></div></div>`
     );
