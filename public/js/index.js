@@ -77,7 +77,7 @@ function loadComments(id) {
         let commentId = comment._id;
         let commentBody = comment.body;
         $(".comment-section").append(
-          `<h5>${commentBody}</h5><button data-id='${commentId}' class='btn-small red delete-comment'>X</button>`
+          `<div class='comment-box'><p>${commentBody}</p><button data-id='${commentId}' class='btn-small red delete-comment'>X</button></div>`
         );
       });
     }
@@ -87,7 +87,7 @@ function loadComments(id) {
 //Add a comment to an article
 $(document).on("click", ".add-comment", function(e) {
   e.preventDefault();
-  if ($(".comment-section").children().length === 1) {
+  if ($(".comment-section").children()[0].innerHTML === "No comments yet... add one!") {
     $(".comment-section").empty();
   }
   let id = $(this).attr("data-id");
@@ -99,9 +99,9 @@ $(document).on("click", ".add-comment", function(e) {
     data: { body: comment }
   }).then(dbComment => {
     $(".comment-section").append(
-      `<h5>${dbComment.body}</h5><button data-id='${
+      `<div class='comment-box'><p>${dbComment.body}</p><button data-id='${
         dbComment._id
-      }' class='btn-small red delete-comment'>X</button>`
+      }' class='btn-small red delete-comment'>X</button></div>`
     );
     $(".comment-body").val("");
   });
