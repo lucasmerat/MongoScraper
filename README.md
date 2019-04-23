@@ -1,6 +1,6 @@
 # Mongo Music Scraper
 
-![header image](/public/assets/imgs/demo.png)
+![header image](/public/imgs/demo.png)
 
 ## Deployed app
 	
