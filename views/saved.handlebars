@@ -2,9 +2,14 @@
     <div class="nav-wrapper white darken-2">
         <div class="container">
             <a href="/" class="brand-logo"><img class="npr-logo" src="/img/npr-logo.svg" /></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="fas fa-bars"></i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><b><a class="view-saved nav-link" href="/saved">Saved articles</a></b></li>
                 <li><b><a class="scrape nav-link">Scrape NPR Music</a></b></li>
+            </ul>
+            <ul class="sidenav" id="mobile-demo">
+                <li><a class="view-saved" href="/saved">Saved articles</a></li>
+                <li><a class="scrape">Scrape NPR Music</a></li>
             </ul>
         </div>
     </div>
@@ -48,10 +53,10 @@
             <div class="card">
                 <div class="card-content">
                     <div class="row content-box">
-                        <div class="col s5 image-box">
+                        <div class="col m5 s12 image-box">
                             <img src={{image}} class='responsive-img'>
                         </div>
-                        <div class="col s7">
+                        <div class="col m7 s12">
                             <span class="card-title">
                                 <a href={{link}}>
                                     <h4>{{title}}</h4>

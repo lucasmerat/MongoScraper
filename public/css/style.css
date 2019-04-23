@@ -62,3 +62,27 @@ body{
 .add-comment{
     border-radius: 14px;
 }
+
+@media only screen and (max-width: 600px) {
+    .content-box{
+      display: block;
+      text-align: center;
+    }
+    .card-action{
+        text-align: center;
+    }
+    .article-comments{
+        margin-bottom: 10px;
+    }
+    .fa-bars{
+        color: black;
+        font-size: 32px;
+    }
+    .npr-logo{
+        height: 58px;
+        width: 126px;
+    }
+    .brand-logo{
+        position: relative !important;
+    }
+  }

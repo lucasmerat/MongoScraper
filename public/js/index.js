@@ -1,17 +1,23 @@
-//Modal event listener
-document.addEventListener('DOMContentLoaded', function () {
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems);
+//Materialize JS
+  document.addEventListener("DOMContentLoaded", function() {
+  var elems = document.querySelectorAll(".modal");
+  var instances = M.Modal.init(elems);
 });
+
+$(document).ready(function(){
+    $('.sidenav').sidenav();
+  });
 
 //Load articles when home page loads
 $.getJSON("/articles", data => {
   console.log(data);
   data.map(article => {
     $(".all-articles").append(
-      `<div class='col s12'><div class='card'><div class='card-content'><div class="row content-box"><div class="col s5 image-box"><img src='${article.image}' class='responsive-img'></div><div class="col s7" ><span class='card-title'><a href='${article.link}'><h4 class='title'>${
-        article.title
-      }</h4></span></a><p class='teaser'>${
+      `<div class='col s12'><div class='card'><div class='card-content'><div class="row content-box"><div class="col m5 s12 image-box"><img src='${
+        article.image
+      }' class='responsive-img'></div><div class="col m7 s12" ><span class='card-title'><a href='${
+        article.link
+      }'><h4 class='title'>${article.title}</h4></span></a><p class='teaser'>${
         article.teaser
       }</p></div></div><div class="card-action"><button class='btn-small save-article red darken-2' data-id='${
         article._id
@@ -36,7 +42,7 @@ $(document).on("click", ".save-article", function() {
     data: { id: $(this).attr("data-id") }
   })
     .then(result => {
-        location.reload();
+      location.reload();
     })
     .catch(err => {
       console.log(err);
@@ -87,7 +93,10 @@ function loadComments(id) {
 //Add a comment to an article
 $(document).on("click", ".add-comment", function(e) {
   e.preventDefault();
-  if ($(".comment-section").children()[0].innerHTML === "No comments yet... add one!") {
+  if (
+    $(".comment-section").children()[0].innerHTML ===
+    "No comments yet... add one!"
+  ) {
     $(".comment-section").empty();
   }
   let id = $(this).attr("data-id");
