@@ -1,3 +1,4 @@
+//Load articles when home page loads
 $.getJSON("/articles", data => {
   console.log(data);
   data.map(article => {
@@ -13,6 +14,7 @@ $.getJSON("/articles", data => {
   });
 });
 
+//Scrape articles
 $(".scrape").on("click", () => {
   $.ajax("/api/scrape", {
     type: "GET"
@@ -21,6 +23,7 @@ $(".scrape").on("click", () => {
   });
 });
 
+//Save an article
 $(document).on("click", ".save-article", function() {
   $.ajax("/api/save", {
     type: "PUT",
@@ -34,6 +37,7 @@ $(document).on("click", ".save-article", function() {
     });
 });
 
+//Remove article from saves
 $(document).on("click", ".delete-save", function() {
   $.ajax("/api/delete", {
     type: "PUT",
@@ -47,12 +51,14 @@ $(document).on("click", ".delete-save", function() {
     });
 });
 
+//View comments. Saves id of article your are viewing for use in loading
 $(document).on("click", ".article-comments", function() {
   let id = $(this).attr("data-id");
   $(".add-comment").attr("data-id", id);
   loadComments(id);
 });
 
+//Load comments of an article. Used when deleting and first viewing comments
 function loadComments(id) {
   $(".comment-section").empty();
   $.ajax("/api/comments/" + id, {
@@ -72,6 +78,7 @@ function loadComments(id) {
   });
 }
 
+//Add a comment to an article
 $(document).on("click", ".add-comment", function(e) {
   e.preventDefault();
   if ($(".comment-section").children().length === 1) {
@@ -94,6 +101,7 @@ $(document).on("click", ".add-comment", function(e) {
   });
 });
 
+//Remove a comment from an article
 $(document).on("click", ".delete-comment", function() {
   let commentId = $(this).attr("data-id");
   $.ajax("/api/deletecomment/" + commentId, {

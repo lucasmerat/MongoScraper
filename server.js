@@ -35,10 +35,9 @@ app.get("/", (req, res) => {
 });
 
 //Display articles on load
-
 app.get("/articles", (req, res) => {
   db.Article.find({ saved: false })
-    .sort({ createdAt: 1 })
+    .sort({ createdAt: -1 })
     .then(dbArticles => {
       res.json(dbArticles);
     })
@@ -48,7 +47,6 @@ app.get("/articles", (req, res) => {
 });
 
 //Scrape NPR for latest music news
-
 app.get("/api/scrape", (req, res) => {
   axios.get("https://www.npr.org/sections/allsongs/").then(response => {
     let $ = cheerio.load(response.data);
