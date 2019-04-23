@@ -1,0 +1,28 @@
+body{
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.npr-logo{
+    height: 65px;
+    width: 125px;
+}
+
+.nav-link{
+    color:grey !important;
+}
+
+.npr-music-img{
+    margin-top: 40px;
+}
+
+.word-1{
+    color:#d62021;
+}
+
+.word-2{
+    color:#000006;
+}
+
+.word-3{
+    color:#247bbd
+}

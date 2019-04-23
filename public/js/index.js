@@ -3,13 +3,13 @@ $.getJSON("/articles", data => {
   console.log(data);
   data.map(article => {
     $(".all-articles").append(
-      `<div class='col s12'><a href='${article.link}'><h3 class='title'>${
+      `<div class='col s12'><div class='card'><div class='card-content'><span class='card-title'><a href='${article.link}'><h3 class='title'>${
         article.title
-      }</h3></a><p class='teaser'>${
+      }</h3></span></a><p class='teaser'>${
         article.teaser
       }</p><button class='btn-small save-article' data-id='${
         article._id
-      }'>Save</button></div>`
+      }'>Save</button></div></div></div>`
     );
   });
 });
