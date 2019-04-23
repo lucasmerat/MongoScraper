@@ -12,12 +12,12 @@
 
 <div class="container">
     <div id="modal1" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title" id="myModalLabel">Article Comments</h4>
-        </div>
-            
-        <div class="modal-body">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Article Comments</h4>
+            </div>
+
+            <div class="modal-body">
                 <div class="card comment-section">
 
                 </div>
@@ -28,22 +28,38 @@
                         <button type='submit' class='add-comment btn-small'>Add comment</button>
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn-flat">Cancel</a>
         </div>
     </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-close btn-flat">Cancel</a>
+    <div class="card">
+        <div class="card-content">
+            <h1 class="grey-text text-darken-2 center">Saved articles</h1>
+        </div>
     </div>
-</div>
-
-    <h1>Saved articles</h1>
     <div class="row saved-articles">
         {{#each articles}}
-        <a href={{link}}>
-            <h3>{{title}}</h3>
-        </a>
-        <p>{{teaser}}</p>
-        <button class="btn btn-small article-comments modal-trigger" data-target="modal1" data-id={{_id}}>Article comments</button>
-        <button class="btn btn-small red delete-save" data-id={{_id}}>Remove from saved</button>
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">
+                        <a href={{link}}>
+                            <h4>{{title}}</h4>
+                        </a>
+                    </span>
+                    <p>{{teaser}}</p>
+                    <div class="card-action">
+                        <button class="btn btn-small blue darken-2 article-comments modal-trigger" data-target="modal1"
+                            data-id={{_id}}>View
+                            comments</button>
+                        <button class="btn btn-small red darken-2 delete-save" data-id={{_id}}>Remove from saved</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
         {{/each}}
     </div>
 

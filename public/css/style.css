@@ -26,3 +26,7 @@ body{
 .word-3{
     color:#247bbd
 }
+
+.save-article, .delete-save, .article-comments{
+    border-radius: 14px;
+}
