@@ -29,14 +29,17 @@ const MONGODB_URI =
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
+//Render home page
 app.get("/", (req, res) => {
   res.render("home");
 });
 
+//Display articles on load
+
 app.get("/articles", (req, res) => {
-  db.Article.find({})
+  db.Article.find({ saved: false })
+    .sort({ createdAt: 1 })
     .then(dbArticles => {
-      console.log(dbArticles);
       res.json(dbArticles);
     })
     .catch(err => {
@@ -44,44 +47,50 @@ app.get("/articles", (req, res) => {
     });
 });
 
+//Scrape NPR for latest music news
+
 app.get("/api/scrape", (req, res) => {
   axios.get("https://www.npr.org/sections/allsongs/").then(response => {
     let $ = cheerio.load(response.data);
-    db.Article.deleteMany({}, (err, result) => {
-      $("div.item-info-wrap").each((i, element) => {
-        let article = {
-          title: $(element)
-            .find($(".title"))
-            .text(),
-          link: $(element)
-            .find($(".title"))
-            .children()
-            .attr("href"),
-          teaser: $(element)
-            .find($(".teaser"))
-            .text()
-        };
-        db.Article.create(article)
-          .then(dbArticle => {
-            console.log("Creating article");
-          })
-          .catch(err => {
-            console.log(err);
-          });
+    $("div.item-info-wrap").each((i, element) => {
+      let article = {
+        title: $(element)
+          .find($(".title"))
+          .text(),
+        link: $(element)
+          .find($(".title"))
+          .children()
+          .attr("href"),
+        teaser: $(element)
+          .find($(".teaser"))
+          .text()
+      };
+      db.Article.findOne({ title: article.title }).then(dbArticle => {
+        if (!dbArticle) {
+          db.Article.create(article)
+            .then(dbArticle => {
+              console.log("Creating article");
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
       });
-      res.json("Done");
     });
+    res.json("Done");
   });
 });
 
+//Save an article for later
 app.put("/api/save", (req, res) => {
-  db.Article.updateOne({ _id: req.body.id }, { $set: { saved: true } }).then(
+  db.Article.updateOne({ _id: req.body.id }, { $set: { saved: true , createdAt:new Date()} }).then(
     record => {
       res.json(record);
     }
   );
 });
 
+//Remove an article from saved
 app.put("/api/delete", (req, res) => {
   db.Article.updateOne({ _id: req.body.id }, { $set: { saved: false } }).then(
     record => {
@@ -90,13 +99,16 @@ app.put("/api/delete", (req, res) => {
   );
 });
 
+//Load saved articles
 app.get("/saved", (req, res) => {
-  db.Article.find({ saved: true }, (err, results) => {
-    console.log(results);
-    res.render("saved", { articles: results });
-  });
+  db.Article.find({ saved: true })
+    .sort({ createdAt: -1 })
+    .then(results => {
+      res.render("saved", { articles: results });
+    });
 });
 
+//Load comments for and article
 app.get("/api/comments/:id", (req, res) => {
   db.Article.findOne({ _id: req.params.id })
     .populate("comment")
@@ -108,11 +120,12 @@ app.get("/api/comments/:id", (req, res) => {
     });
 });
 
+//Add comment to an article
 app.post("/api/addcomment/:id", (req, res) => {
   db.Comment.create(req.body).then(dbComment => {
     return db.Article.findOneAndUpdate(
       { _id: req.params.id },
-      { $push:{ comment: dbComment._id } },
+      { $push: { comment: dbComment._id } },
       { new: true }
     ).then(dbArticle => {
       res.json(dbComment);
@@ -120,11 +133,12 @@ app.post("/api/addcomment/:id", (req, res) => {
   });
 });
 
-app.delete("/api/deletecomment/:id", (req, res)=>{
-    db.Comment.deleteOne({_id: req.params.id}).then((result)=>{
-        res.json(result)
-    })
-})
+//Delete a comment from an article
+app.delete("/api/deletecomment/:id", (req, res) => {
+  db.Comment.deleteOne({ _id: req.params.id }).then(result => {
+    res.json(result);
+  });
+});
 
 app.listen(PORT, () => {
   console.log("App running on port " + PORT + "!");

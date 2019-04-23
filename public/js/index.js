@@ -27,7 +27,7 @@ $(document).on("click", ".save-article", function() {
     data: { id: $(this).attr("data-id") }
   })
     .then(result => {
-      console.log(result);
+        location.reload();
     })
     .catch(err => {
       console.log(err);
